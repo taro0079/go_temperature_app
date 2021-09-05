@@ -1,4 +1,4 @@
-package function
+package database
 
 import (
 	"github.com/jinzhu/gorm"
@@ -12,7 +12,7 @@ type Measurement struct {
 }
 
 // initalize database
-func (m Measurement) initDataBase() {
+func InitDataBase() {
 	db, err := gorm.Open("sqlite3", "tempdb.sqlite3")
 
 	// エラー処理
@@ -24,7 +24,7 @@ func (m Measurement) initDataBase() {
 }
 
 // insert data to database
-func (m Measurement) insertToDataBase(time time.Time, temp float64) {
+func InsertToDataBase(time time.Time, temp float64) {
 	db, err := gorm.Open("sqlite3", "tempdb.sqlite3")
 	if err != nil {
 		panic("database can not be opened")
