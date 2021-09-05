@@ -12,7 +12,7 @@ type Measurement struct {
 }
 
 // initalize database
-func (m Measurement) dbInit() {
+func (m Measurement) initDataBase() {
 	db, err := gorm.Open("sqlite3", "tempdb.sqlite3")
 
 	// エラー処理
@@ -21,4 +21,15 @@ func (m Measurement) dbInit() {
 	}
 	db.AutoMigrate(&Measurement{})
 	defer db.Close()
+}
+
+// insert data to database
+func (m Measurement) insertToDataBase(time time.Time, temp float64) {
+	db, err := gorm.Open("sqlite3", "tempdb.sqlite3")
+	if err != nil {
+		panic("database can not be opened")
+	}
+	db.Create(&Measurement{Time: time, Temperature: temp})
+	defer db.Close()
+
 }
