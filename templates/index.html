@@ -12,6 +12,21 @@
 		<p> Ochinchin is beatiful </p>
 
 		<h1>{{.data}}</h1>
+		<form method="post" action="/new">
+		<p>Time<input type="datetime-local" name="time" placeholder="add"></p>
+		<p>Temperature<input type="number" name="temp" placeholder="add"></p>
+
+		<p><input type="submit" value="Send"></p>
+		</form>
+
+		<ul>
+			{{ range .measurement }}
+			<li>内容：{{ .Time }}、状態：{{ .Temperature }}
+				<label><a href="/detail/{{.ID}}">編集</a></label>
+				<label><a href="/delete_check/{{.ID}}">削除</a></label>
+			</li>
+			{{end}}
+		</ul>
 	</body>
 </html>
 

@@ -4,28 +4,27 @@ import (
 	"fmt"
 	"strconv"
 	"time"
-
-	"./function"
+	"function/function"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*.html")
+	database.InitDataBase()
 
 	data := "OCHINCHIN"
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.HTML(200, "index.html", gin.H{"data": data})
 	})
 
-	router.Run()
 
 	router.POST("/new", func(ctx *gin.Context) {
-		time := stringToTime(ctx.PostForm("time"))
 		temp := strTof64(ctx.PostForm("temp"))
-		database.InsertToDataBase(time, temp)
+		database.InsertToDataBase(temp)
 		ctx.Redirect(302, "/")
 	})
+	router.Run()
 }
 
 func strTof64(text string) float64 {

@@ -1,35 +1,34 @@
 package database
 
 import (
-	"github.com/jinzhu/gorm"
-	"time"
+	"gorm.io/gorm"
+	"gorm.io/driver/sqlite"
 )
 
 type Measurement struct {
 	gorm.Model
-	Time        time.Time
 	Temperature float64
 }
 
 // initalize database
 func InitDataBase() {
-	db, err := gorm.Open("sqlite3", "tempdb.sqlite3")
+	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 
 	// エラー処理
 	if err != nil {
-		panic("database can not be opened")
+		panic("database can not be opened (db initialized)")
 	}
 	db.AutoMigrate(&Measurement{})
-	defer db.Close()
+	//defer db.Close()
 }
 
 // insert data to database
-func InsertToDataBase(time time.Time, temp float64) {
-	db, err := gorm.Open("sqlite3", "tempdb.sqlite3")
+func InsertToDataBase(temp float64) {
+	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 	if err != nil {
 		panic("database can not be opened")
 	}
-	db.Create(&Measurement{Time: time, Temperature: temp})
-	defer db.Close()
+	db.Create(&Measurement{Temperature: temp})
+	//defer db.Close()
 
 }
