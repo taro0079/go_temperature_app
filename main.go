@@ -3,16 +3,19 @@ package main
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
+
 	//	"gorm.io/driver/sqlite"
 
-	"gorm.io/gorm"
 	"os"
 	"strconv"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -28,6 +31,19 @@ func main() {
 	router.GET("/morita_input", func(ctx *gin.Context) {
 		measurements := GetAllFromDataBase()
 		ctx.HTML(200, "input.html", gin.H{"measurement": measurements})
+	})
+
+	//Update
+	router.POST("/update/:id", func(ctx *gin.Context) {
+		n := ctx.Param("id")
+		id, err := strconv.Atoi(n)
+		if err != nil {
+			panic("ERROR")
+		}
+		text := ctx.PostForm("text")
+		status := ctx.PostForm("status")
+		dbUpdate(id, text, status)
+		ctx.Redirect(302, "/")
 	})
 
 	router.POST("/new", func(ctx *gin.Context) {
@@ -153,4 +169,19 @@ func dbGetOne(id int) Measurement {
 	var measurements Measurement
 	gormDB.First(&measurements, id)
 	return measurements
+}
+
+func dbUpdate(id int, Time time.Time, Temp float64) {
+	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqldb,
+	}), &gorm.Config{})
+	if err != nil {
+		panic("データベース開けず！（dbUpdate)")
+	}
+	var measurement Measurement
+	gormDB.First(&measurement, id)
+	measurement.Time = Time
+	measurement.Temperature = Temp
+	gormDB.Save(&measurement)
 }
