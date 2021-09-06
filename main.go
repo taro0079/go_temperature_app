@@ -43,8 +43,8 @@ func main() {
 		if err != nil {
 			panic("ERROR")
 		}
-		todo := dbGetOne(id)
-		ctx.HTML(200, "delete.html", gin.H{"todo": todo})
+		measurement := dbGetOne(id)
+		ctx.HTML(200, "delete.html", gin.H{"measurement": measurement})
 	})
 
 	router.POST("/delete/:id", func(ctx *gin.Context) {
