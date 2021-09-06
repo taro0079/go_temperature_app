@@ -2,26 +2,27 @@ package main
 
 import (
 	"fmt"
-	"temperature-measurement/function"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*.html")
-	database.InitDataBase()
+	InitDataBase()
 
 	router.GET("/", func(ctx *gin.Context) {
-		measurements := database.GetAllFromDataBase()
+		measurements := GetAllFromDataBase()
 		ctx.HTML(200, "index.html", gin.H{"measurement": measurements})
 	})
 
 	router.POST("/new", func(ctx *gin.Context) {
 		temp := strTof64(ctx.PostForm("temp"))
 		time := stringToTime(ctx.PostForm("time"))
-		database.InsertToDataBase(time, temp)
+		InsertToDataBase(time, temp)
 
 		ctx.Redirect(302, "/")
 	})
@@ -41,4 +42,44 @@ func stringToTime(text string) time.Time {
 	var layout = "2006-01-02T15:04Z"
 	t, _ := time.Parse(layout, text)
 	return t
+}
+
+type Measurement struct {
+	gorm.Model
+	Time time.Time
+	Temperature float64
+}
+
+// initalize database
+func InitDataBase() {
+	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+
+	// エラー処理
+	if err != nil {
+		panic("database can not be opened (db initialized)")
+	}
+	db.AutoMigrate(&Measurement{})
+	//defer db.Close()
+}
+
+// insert data to database
+func InsertToDataBase(time time.Time, temp float64) {
+	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	if err != nil {
+		panic("database can not be opened")
+	}
+	db.Create(&Measurement{Time: time, Temperature: temp})
+	//defer db.Close()
+
+}
+
+func GetAllFromDataBase() []Measurement {
+	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	if err != nil {
+		panic("database can not be opened (get all data from database)")
+	}
+	var measurements []Measurement
+	db.Order("created_at desc").Find(&measurements)
+	return measurements
+
 }
