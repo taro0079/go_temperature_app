@@ -97,9 +97,10 @@ func strTof64(text string) float64 {
 
 func stringToTime(text string) time.Time {
 	var layout = "2006-01-02T15:04"
-	t, _ := time.Parse(layout, text)
-	fixed_t := UTCtoJP(t)
-	return fixed_t
+	jst, _ := time.LoadLocation("Asia/Tokyo")
+	t, _ := time.ParseInLocation(layout, text, jst)
+	//fixed_t := UTCtoJP(t)
+	return t
 }
 
 func UTCtoJP(t time.Time) time.Time {
