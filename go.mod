@@ -1,7 +1,6 @@
 module temperature-measurement
 
-go 1.12
-
+heroku goVersion go1.15
 require (
 	github.com/gin-gonic/gin v1.7.4
 	gorm.io/driver/sqlite v1.1.4
