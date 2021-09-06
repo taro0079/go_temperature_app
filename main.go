@@ -98,7 +98,14 @@ func strTof64(text string) float64 {
 func stringToTime(text string) time.Time {
 	var layout = "2006-01-02T15:04"
 	t, _ := time.Parse(layout, text)
-	return t
+	fixed_t := UTCtoJP(t)
+	return fixed_t
+}
+
+func UTCtoJP(t time.Time) time.Time {
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	nowJST := t.In(jst)
+	return nowJST
 }
 
 type Measurement struct {
