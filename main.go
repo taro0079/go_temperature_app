@@ -7,7 +7,7 @@ import (
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
-//	"gorm.io/driver/sqlite"
+	//	"gorm.io/driver/sqlite"
 
 	"gorm.io/gorm"
 	"os"
@@ -35,6 +35,16 @@ func main() {
 		time := stringToTime(ctx.PostForm("time"))
 		InsertToDataBase(time, temp)
 
+		ctx.Redirect(302, "/")
+	})
+
+	router.POST("/delete/:id", func(ctx *gin.Context) {
+		n := ctx.Param("id")
+		id, err := strconv.Atoi(n)
+		if err != nil {
+			fmt.Println("Error")
+		}
+		DeleteFromDataBase(id)
 		ctx.Redirect(302, "/")
 	})
 	router.Run()
@@ -104,5 +114,20 @@ func GetAllFromDataBase() []Measurement {
 	var measurements []Measurement
 	gormDB.Order("created_at desc").Find(&measurements)
 	return measurements
+
+}
+
+func DeleteFromDataBase(id int) {
+	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqldb,
+	}), &gorm.Config{})
+	if err != nil {
+		panic("database can not be opened (delete data)")
+	}
+
+	var measurements Measurement
+	gormDB.First(&measurements, id)
+	gormDB.Delete(&measurements)
 
 }
