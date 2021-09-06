@@ -1,35 +1,77 @@
 <!DOCTYPE html>
-<html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<title>Sample Application</title>
+	<html lang="ja">
+		<head>
+			<meta charset="UTF-8">
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+			<title>Sample Application</title>
 
-	</head>
-	<body>
-		<h1>コロナワクチン副反応　体温推移</h1>
-		<form method="post" action="/new">
-		<p>Time<input type="datetime-local" name="time" placeholder="add"></p>
-		<p>Temperature<input type="number" name="temp" placeholder="add"></p>
+		</head>
+		<body>
+			<h1>コロナワクチン副反応　体温推移</h1>
+			<form method="post" action="/new">
+				<p>Time<input type="datetime-localhttp://localhost:8080/" name="time" placeholder="add"></input></p>
+				<p>Temperature<input type="number" step="0.1" name="temp" placeholder="add"></input></p>
 
-		<p><input type="submit" value="Send"></p>
-		</form>
+				<p><input type="submit" value="Send"></input></p>
+			</form>
 
-		<ul>
-			{{ range .measurement }}
-			<li>Time：{{ .Time }}, 
-				<ul>
-				<li>
-				Temperature：{{ .Temperature }}
+			<canvas id="myLineChart"></canvas>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+			<script> var data = [] </script>
+
+
+			<ul>
+				{{ range .measurement }}
+				<li>Time：{{ .Time }},
+					<ul>
+						<li>
+							Temperature：{{ .Temperature }}
+						</li>
+					</ul>
+					<label><a href="/detail/{{.ID}}">編集</a></label>
+					<label><a href="/delete_check/{{.ID}}">削除</a></label>
 				</li>
-				</ul>
-				<label><a href="/detail/{{.ID}}">編集</a></label>
-				<label><a href="/delete_check/{{.ID}}">削除</a></label>
-			</li>
-			<br>
-			{{end}}
-		</ul>
-	</body>
-</html>
+				<br></br>
+				<script>
+					x = {{ .Time }} 
+					y = {{ .Temperature }}
+					data.push({x:x, y:y})
+					console.log(data)
+				</script>
+				{{ end }}
+			</ul>
+			<script>
+				var ctx = document.getElementById("myLineChart");
+				var options = {
+						scales: {
+								x:{
+									type: 'time',
+									time: {
+										unit: 'minute'
+									}
+								}
+							}
+					}
+				var myLineChart = new Chart(ctx, {
+									type: 'line',
+									data: {
+										datasets:[{
+												label: 'tmemp',
+												data: data
+											}]
+										},
 
-
-
+									options: {
+										scales: {
+											xAxes: [{
+												type: 'time',
+												time: {
+													unit: 'minute'
+												}
+											}]
+										}
+									}
+								});
+			</script>
+		</body>
+	</html>

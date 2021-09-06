@@ -38,7 +38,7 @@ func strTof64(text string) float64 {
 }
 
 func stringToTime(text string) time.Time {
-	var layout = "2006-01-02T15:04"
+	var layout = "2006-01-02T15:04Z"
 	t, _ := time.Parse(layout, text)
 	return t
 }
