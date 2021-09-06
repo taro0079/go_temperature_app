@@ -40,9 +40,9 @@ func main() {
 		if err != nil {
 			panic("ERROR")
 		}
-		text := ctx.PostForm("text")
-		status := ctx.PostForm("status")
-		dbUpdate(id, text, status)
+		Time := stringToTime(ctx.PostForm("time"))
+		Temp := strTof64(ctx.PostForm("temp"))
+		dbUpdate(id, Time, Temp)
 		ctx.Redirect(302, "/")
 	})
 
@@ -157,7 +157,6 @@ func DeleteFromDataBase(id int) {
 
 }
 
-//DB一つ取得
 func dbGetOne(id int) Measurement {
 	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	gormDB, err := gorm.Open(postgres.New(postgres.Config{
