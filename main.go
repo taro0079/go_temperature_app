@@ -1,12 +1,18 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/heroku/x/hmetrics/onload"
+	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+
+	"gorm.io/gorm"
+	"os"
 	"strconv"
 	"time"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -46,40 +52,52 @@ func stringToTime(text string) time.Time {
 
 type Measurement struct {
 	gorm.Model
-	Time time.Time
+	Time        time.Time
 	Temperature float64
 }
 
 // initalize database
 func InitDataBase() {
-	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	//db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqldb,
+	}), &gorm.Config{})
 
 	// エラー処理
 	if err != nil {
 		panic("database can not be opened (db initialized)")
 	}
-	db.AutoMigrate(&Measurement{})
+	gormDB.AutoMigrate(&Measurement{})
 	//defer db.Close()
 }
 
 // insert data to database
 func InsertToDataBase(time time.Time, temp float64) {
-	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	//db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqldb,
+	}), &gorm.Config{})
 	if err != nil {
 		panic("database can not be opened")
 	}
-	db.Create(&Measurement{Time: time, Temperature: temp})
+	gormDB.Create(&Measurement{Time: time, Temperature: temp})
 	//defer db.Close()
 
 }
 
 func GetAllFromDataBase() []Measurement {
-	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	//db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqldb,
+	}), &gorm.Config{})
 	if err != nil {
 		panic("database can not be opened (get all data from database)")
 	}
 	var measurements []Measurement
-	db.Order("created_at desc").Find(&measurements)
+	gormDB.Order("created_at desc").Find(&measurements)
 	return measurements
 
 }
