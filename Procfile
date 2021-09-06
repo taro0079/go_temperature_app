@@ -1,1 +1,1 @@
-web: bin/go_temp_app
+web: bin/go_temperature_app
