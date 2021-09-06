@@ -128,6 +128,7 @@ func InitDataBase() {
 		panic("database can not be opened (db initialized)")
 	}
 	gormDB.AutoMigrate(&Measurement{})
+	defer sqldb.Close()
 	//defer db.Close()
 }
 
@@ -143,6 +144,7 @@ func InsertToDataBase(time time.Time, temp float64) {
 	}
 	gormDB.Create(&Measurement{Time: time, Temperature: temp})
 	//defer db.Close()
+	defer sqldb.Close()
 
 }
 
@@ -157,6 +159,7 @@ func GetAllFromDataBase() []Measurement {
 	}
 	var measurements []Measurement
 	gormDB.Order("created_at desc").Find(&measurements)
+	defer sqldb.Close()
 	return measurements
 
 }
@@ -173,6 +176,7 @@ func DeleteFromDataBase(id int) {
 	var measurements Measurement
 	gormDB.First(&measurements, id)
 	gormDB.Delete(&measurements)
+	defer sqldb.Close()
 
 }
 
@@ -186,6 +190,7 @@ func dbGetOne(id int) Measurement {
 	}
 	var measurements Measurement
 	gormDB.First(&measurements, id)
+	defer sqldb.Close()
 	return measurements
 }
 
@@ -202,4 +207,5 @@ func dbUpdate(id int, Time time.Time, Temp float64) {
 	measurement.Time = Time
 	measurement.Temperature = Temp
 	gormDB.Save(&measurement)
+	defer sqldb.Close()
 }
