@@ -2,9 +2,9 @@
 <h1>削除確認</h1>
 <p>本当に削除しますか？</p>
 <ul>
-    <li>内容： {{.todo.Text}}</li>
-    <li>状態： {{.todo.Status}}</li>
-    <li>作成時間： {{.todo.CreatedAt}}</li>
+    <li>時刻： {{.measurement.Time}}</li>
+    <li>体温： {{.measurement.Temperature}}</li>
+    <li>作成時間： {{.measurement.CreatedAt}}</li>
 </ul>
 
 <form method="post" action="/delete/{{.todo.ID}}">
