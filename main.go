@@ -7,7 +7,7 @@ import (
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
+//	"gorm.io/driver/sqlite"
 
 	"gorm.io/gorm"
 	"os"
