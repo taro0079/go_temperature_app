@@ -51,8 +51,8 @@ func main() {
 		if err != nil {
 			panic("ERROR")
 		}
-		Time := stringToTime(ctx.PostForm("Time"))
-		Temp := strTof64(ctx.PostForm("Temperature"))
+		Time := stringToTime(ctx.PostForm("time"))
+		Temp := strTof64(ctx.PostForm("temp"))
 		dbUpdate(id, Time, Temp)
 		ctx.Redirect(302, "/")
 	})
