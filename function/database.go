@@ -1,12 +1,15 @@
 package database
 
 import (
-	"gorm.io/gorm"
+	"time"
+
 	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 type Measurement struct {
 	gorm.Model
+	Time time.Time
 	Temperature float64
 }
 
@@ -23,12 +26,23 @@ func InitDataBase() {
 }
 
 // insert data to database
-func InsertToDataBase(temp float64) {
+func InsertToDataBase(time time.Time, temp float64) {
 	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 	if err != nil {
 		panic("database can not be opened")
 	}
-	db.Create(&Measurement{Temperature: temp})
+	db.Create(&Measurement{Time: time, Temperature: temp})
 	//defer db.Close()
+
+}
+
+func GetAllFromDataBase() []Measurement {
+	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	if err != nil {
+		panic("database can not be opened (get all data from database)")
+	}
+	var measurements []Measurement
+	db.Order("created_at desc").Find(&measurements)
+	return measurements
 
 }

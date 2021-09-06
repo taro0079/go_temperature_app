@@ -6,12 +6,7 @@
 
 	</head>
 	<body>
-		<h1>Hello World</h1>
-		<h2>Objective</h2>
-		<p> This page means Ochinchin ! </p>
-		<p> Ochinchin is beatiful </p>
-
-		<h1>{{.data}}</h1>
+		<h1>コロナワクチン副反応　体温推移</h1>
 		<form method="post" action="/new">
 		<p>Time<input type="datetime-local" name="time" placeholder="add"></p>
 		<p>Temperature<input type="number" name="temp" placeholder="add"></p>
@@ -21,10 +16,16 @@
 
 		<ul>
 			{{ range .measurement }}
-			<li>内容：{{ .Time }}、状態：{{ .Temperature }}
+			<li>Time：{{ .Time }}, 
+				<ul>
+				<li>
+				Temperature：{{ .Temperature }}
+				</li>
+				</ul>
 				<label><a href="/detail/{{.ID}}">編集</a></label>
 				<label><a href="/delete_check/{{.ID}}">削除</a></label>
 			</li>
+			<br>
 			{{end}}
 		</ul>
 	</body>

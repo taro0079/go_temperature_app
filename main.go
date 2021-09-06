@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"time"
 	"function/function"
 	"github.com/gin-gonic/gin"
+	"strconv"
+	"time"
 )
 
 func main() {
@@ -13,20 +13,22 @@ func main() {
 	router.LoadHTMLGlob("templates/*.html")
 	database.InitDataBase()
 
-	data := "OCHINCHIN"
 	router.GET("/", func(ctx *gin.Context) {
-		ctx.HTML(200, "index.html", gin.H{"data": data})
+		measurements := database.GetAllFromDataBase()
+		ctx.HTML(200, "index.html", gin.H{"measurement": measurements})
 	})
-
 
 	router.POST("/new", func(ctx *gin.Context) {
 		temp := strTof64(ctx.PostForm("temp"))
-		database.InsertToDataBase(temp)
+		time := stringToTime(ctx.PostForm("time"))
+		database.InsertToDataBase(time, temp)
+
 		ctx.Redirect(302, "/")
 	})
 	router.Run()
 }
 
+// Stringをfloatに変換
 func strTof64(text string) float64 {
 	f, err := strconv.ParseFloat(text, 64)
 	if err != nil {
@@ -36,7 +38,7 @@ func strTof64(text string) float64 {
 }
 
 func stringToTime(text string) time.Time {
-	var layout = "2006-01-02 15:04:05"
+	var layout = "2006-01-02T15:04"
 	t, _ := time.Parse(layout, text)
 	return t
 }
