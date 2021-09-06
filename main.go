@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"function/function"
+	"temperature-measurement/function"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"

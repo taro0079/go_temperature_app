@@ -1,4 +1,4 @@
-module function
+module temperature-measurement
 
 go 1.12
 
