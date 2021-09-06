@@ -37,6 +37,15 @@ func main() {
 
 		ctx.Redirect(302, "/")
 	})
+	router.GET("/delete_check/:id", func(ctx *gin.Context) {
+		n := ctx.Param("id")
+		id, err := strconv.Atoi(n)
+		if err != nil {
+			panic("ERROR")
+		}
+		todo := dbGetOne(id)
+		ctx.HTML(200, "delete.html", gin.H{"todo": todo})
+	})
 
 	router.POST("/delete/:id", func(ctx *gin.Context) {
 		n := ctx.Param("id")
@@ -130,4 +139,18 @@ func DeleteFromDataBase(id int) {
 	gormDB.First(&measurements, id)
 	gormDB.Delete(&measurements)
 
+}
+
+//DB一つ取得
+func dbGetOne(id int) Measurement {
+	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqldb,
+	}), &gorm.Config{})
+	if err != nil {
+		panic("データベース開けず！(dbGetOne())")
+	}
+	var measurements Measurement
+	gormDB.First(&measurements, id)
+	return measurements
 }
