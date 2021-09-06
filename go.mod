@@ -1,4 +1,4 @@
-module temperature-measurement
+module github.com/taro0082/go_temperature_app
 
 go 1.17
 
