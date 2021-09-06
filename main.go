@@ -33,6 +33,17 @@ func main() {
 		ctx.HTML(200, "input.html", gin.H{"measurement": measurements})
 	})
 
+	//Detail
+	router.GET("/detail/:id", func(ctx *gin.Context) {
+		n := ctx.Param("id")
+		id, err := strconv.Atoi(n)
+		if err != nil {
+			panic(err)
+		}
+		measurement := dbGetOne(id)
+		ctx.HTML(200, "detail.html", gin.H{"measurement": measurement})
+	})
+
 	//Update
 	router.POST("/update/:id", func(ctx *gin.Context) {
 		n := ctx.Param("id")
