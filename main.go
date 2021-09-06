@@ -25,6 +25,11 @@ func main() {
 		ctx.HTML(200, "index.html", gin.H{"measurement": measurements})
 	})
 
+	router.GET("/morita_input", func(ctx *gin.Context) {
+		measurements := GetAllFromDataBase()
+		ctx.HTML(200, "input.html", gin.H{"measurement": measurements})
+	})
+
 	router.POST("/new", func(ctx *gin.Context) {
 		temp := strTof64(ctx.PostForm("temp"))
 		time := stringToTime(ctx.PostForm("time"))
