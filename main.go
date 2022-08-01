@@ -23,12 +23,12 @@ func main() {
 	router.LoadHTMLGlob("templates/*.html")
 	InitDataBase()
 
-	router.GET("/", func(ctx *gin.Context) {
-		measurements := GetAllFromDataBase()
-		ctx.HTML(200, "index.html", gin.H{"measurement": measurements})
-	})
+	// router.GET("/", func(ctx *gin.Context) {
+	// 	measurements := GetAllFromDataBase()
+	// 	ctx.HTML(200, "index.html", gin.H{"measurement": measurements})
+	// })
 
-	router.GET("/morita_input", func(ctx *gin.Context) {
+	router.GET("/", func(ctx *gin.Context) {
 		measurements := GetAllFromDataBase()
 		ctx.HTML(200, "input.html", gin.H{"measurement": measurements})
 	})
